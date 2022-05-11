@@ -7,7 +7,9 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
+
+	// _ "github.com/mattn/go-sqlite3"
 	"github.com/rinwaowuogba/ent-sample/db/ent"
 	"github.com/rinwaowuogba/ent-sample/db/ent/car"
 	"github.com/rinwaowuogba/ent-sample/db/ent/group"
@@ -17,26 +19,26 @@ import (
 func runTest(c *ent.Client) {
 	ctx := context.TODO()
 
-	// _, err := CreateUser(ctx, c)
-	// if err != nil {
-	// 	log.Fatalf("unable to continue test: %v", err)
-	// }
+	_, err := CreateUser(ctx, c)
+	if err != nil {
+		log.Fatalf("unable to continue test: %v", err)
+	}
 
-	// _, err = QueryUser(ctx, c)
-	// if err != nil {
-	// 	log.Fatalf("unable to continue test: %v", err)
-	// }
+	_, err = QueryUser(ctx, c)
+	if err != nil {
+		log.Fatalf("unable to continue test: %v", err)
+	}
 
 	// u, err := CreateCars(ctx, c)
 	// if err != nil {
 	// 	log.Fatalf("unable to continue test: %v", err)
 	// }
 
-	fmt.Println()
-	fmt.Println()
+	// fmt.Println()
+	// fmt.Println()
 
-	CreateGraph(ctx, c)
-	QueryGroupWithUsers(ctx, c)
+	// CreateGraph(ctx, c)
+	// QueryGroupWithUsers(ctx, c)
 	// QueryArielCars(ctx, c)
 	// QueryGithub(ctx, c)
 	// QueryCarUsers(ctx, u)
@@ -47,7 +49,14 @@ func runTest(c *ent.Client) {
 }
 
 func main() {
-	client, err := ent.Open(dialect.SQLite, "file:ent?mode=memory&cache=shared&_fk=1")
+	// client, err := ent.Open(dialect.SQLite, "file:ent?mode=memory&cache=shared&_fk=1")
+	// connectionString := "host=<host> port=<port> user=<user> dbname=<database> password=<pass>"
+	// connectionString := "postgresql://postgres:postgres@127.0.0.1/test_db?sslmode=disable"
+
+	// todo: replace with pgx
+	connectionString := "host=127.0.0.1 port=5432 user=postgres dbname=test_db password=postgres sslmode=disable"
+	client, err := ent.Open(dialect.Postgres, connectionString)
+
 	if err != nil {
 		log.Fatalf("failed opening connection to sqlite: %v", err)
 	}
