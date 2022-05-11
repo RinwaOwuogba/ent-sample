@@ -50,7 +50,7 @@ func runTest(c *ent.Client) {
 }
 
 func main() {
-	// client, err := ent.Open(dialect.SQLite, "file:ent?mode=memory&cache=shared&_fk=1")
+	// client, err := ent.Open(dialect.SQLite, "file:en	t?mode=memory&cache=shared&_fk=1")
 	// connectionString := "host=<host> port=<port> user=<user> dbname=<database> password=<pass>"
 	// connectionString := "postgresql://postgres:postgres@127.0.0.1/test_db?sslmode=disable"
 
