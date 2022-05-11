@@ -56,6 +56,20 @@ func (uu *UserUpdate) SetNillableName(s *string) *UserUpdate {
 	return uu
 }
 
+// SetHasEaten sets the "hasEaten" field.
+func (uu *UserUpdate) SetHasEaten(b bool) *UserUpdate {
+	uu.mutation.SetHasEaten(b)
+	return uu
+}
+
+// SetNillableHasEaten sets the "hasEaten" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableHasEaten(b *bool) *UserUpdate {
+	if b != nil {
+		uu.SetHasEaten(*b)
+	}
+	return uu
+}
+
 // AddCarIDs adds the "cars" edge to the Car entity by IDs.
 func (uu *UserUpdate) AddCarIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddCarIDs(ids...)
@@ -242,6 +256,13 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldName,
 		})
 	}
+	if value, ok := uu.mutation.HasEaten(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: user.FieldHasEaten,
+		})
+	}
 	if uu.mutation.CarsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -396,6 +417,20 @@ func (uuo *UserUpdateOne) SetNillableName(s *string) *UserUpdateOne {
 	return uuo
 }
 
+// SetHasEaten sets the "hasEaten" field.
+func (uuo *UserUpdateOne) SetHasEaten(b bool) *UserUpdateOne {
+	uuo.mutation.SetHasEaten(b)
+	return uuo
+}
+
+// SetNillableHasEaten sets the "hasEaten" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableHasEaten(b *bool) *UserUpdateOne {
+	if b != nil {
+		uuo.SetHasEaten(*b)
+	}
+	return uuo
+}
+
 // AddCarIDs adds the "cars" edge to the Car entity by IDs.
 func (uuo *UserUpdateOne) AddCarIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.AddCarIDs(ids...)
@@ -511,9 +546,15 @@ func (uuo *UserUpdateOne) Save(ctx context.Context) (*User, error) {
 			}
 			mut = uuo.hooks[i](mut)
 		}
-		if _, err := mut.Mutate(ctx, uuo.mutation); err != nil {
+		v, err := mut.Mutate(ctx, uuo.mutation)
+		if err != nil {
 			return nil, err
 		}
+		nv, ok := v.(*User)
+		if !ok {
+			return nil, fmt.Errorf("unexpected node type %T returned from UserMutation", v)
+		}
+		node = nv
 	}
 	return node, err
 }
@@ -604,6 +645,13 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Type:   field.TypeString,
 			Value:  value,
 			Column: user.FieldName,
+		})
+	}
+	if value, ok := uuo.mutation.HasEaten(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: user.FieldHasEaten,
 		})
 	}
 	if uuo.mutation.CarsCleared() {

@@ -28,4 +28,8 @@ func init() {
 	userDescName := userFields[1].Descriptor()
 	// user.DefaultName holds the default value on creation for the name field.
 	user.DefaultName = userDescName.Default.(string)
+	// userDescHasEaten is the schema descriptor for hasEaten field.
+	userDescHasEaten := userFields[2].Descriptor()
+	// user.DefaultHasEaten holds the default value on creation for the hasEaten field.
+	user.DefaultHasEaten = userDescHasEaten.Default.(bool)
 }

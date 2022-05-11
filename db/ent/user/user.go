@@ -11,6 +11,8 @@ const (
 	FieldAge = "age"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldHasEaten holds the string denoting the haseaten field in the database.
+	FieldHasEaten = "has_eaten"
 	// EdgeCars holds the string denoting the cars edge name in mutations.
 	EdgeCars = "cars"
 	// EdgeGroups holds the string denoting the groups edge name in mutations.
@@ -36,6 +38,7 @@ var Columns = []string{
 	FieldID,
 	FieldAge,
 	FieldName,
+	FieldHasEaten,
 }
 
 var (
@@ -59,4 +62,6 @@ var (
 	AgeValidator func(int) error
 	// DefaultName holds the default value on creation for the "name" field.
 	DefaultName string
+	// DefaultHasEaten holds the default value on creation for the "hasEaten" field.
+	DefaultHasEaten bool
 )

@@ -41,6 +41,20 @@ func (uc *UserCreate) SetNillableName(s *string) *UserCreate {
 	return uc
 }
 
+// SetHasEaten sets the "hasEaten" field.
+func (uc *UserCreate) SetHasEaten(b bool) *UserCreate {
+	uc.mutation.SetHasEaten(b)
+	return uc
+}
+
+// SetNillableHasEaten sets the "hasEaten" field if the given value is not nil.
+func (uc *UserCreate) SetNillableHasEaten(b *bool) *UserCreate {
+	if b != nil {
+		uc.SetHasEaten(*b)
+	}
+	return uc
+}
+
 // AddCarIDs adds the "cars" edge to the Car entity by IDs.
 func (uc *UserCreate) AddCarIDs(ids ...int) *UserCreate {
 	uc.mutation.AddCarIDs(ids...)
@@ -111,9 +125,15 @@ func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
 			}
 			mut = uc.hooks[i](mut)
 		}
-		if _, err := mut.Mutate(ctx, uc.mutation); err != nil {
+		v, err := mut.Mutate(ctx, uc.mutation)
+		if err != nil {
 			return nil, err
 		}
+		nv, ok := v.(*User)
+		if !ok {
+			return nil, fmt.Errorf("unexpected node type %T returned from UserMutation", v)
+		}
+		node = nv
 	}
 	return node, err
 }
@@ -146,6 +166,10 @@ func (uc *UserCreate) defaults() {
 		v := user.DefaultName
 		uc.mutation.SetName(v)
 	}
+	if _, ok := uc.mutation.HasEaten(); !ok {
+		v := user.DefaultHasEaten
+		uc.mutation.SetHasEaten(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -160,6 +184,9 @@ func (uc *UserCreate) check() error {
 	}
 	if _, ok := uc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "User.name"`)}
+	}
+	if _, ok := uc.mutation.HasEaten(); !ok {
+		return &ValidationError{Name: "hasEaten", err: errors.New(`ent: missing required field "User.hasEaten"`)}
 	}
 	return nil
 }
@@ -203,6 +230,14 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Column: user.FieldName,
 		})
 		_node.Name = value
+	}
+	if value, ok := uc.mutation.HasEaten(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: user.FieldHasEaten,
+		})
+		_node.HasEaten = value
 	}
 	if nodes := uc.mutation.CarsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

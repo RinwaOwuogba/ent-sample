@@ -105,6 +105,13 @@ func Name(v string) predicate.User {
 	})
 }
 
+// HasEaten applies equality check predicate on the "hasEaten" field. It's identical to HasEatenEQ.
+func HasEaten(v bool) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHasEaten), v))
+	})
+}
+
 // AgeEQ applies the EQ predicate on the "age" field.
 func AgeEQ(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -289,6 +296,20 @@ func NameEqualFold(v string) predicate.User {
 func NameContainsFold(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldName), v))
+	})
+}
+
+// HasEatenEQ applies the EQ predicate on the "hasEaten" field.
+func HasEatenEQ(v bool) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHasEaten), v))
+	})
+}
+
+// HasEatenNEQ applies the NEQ predicate on the "hasEaten" field.
+func HasEatenNEQ(v bool) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldHasEaten), v))
 	})
 }
 

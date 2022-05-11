@@ -1,6 +1,10 @@
 ### Steps
 
-- Update schema, generate schema code
+- Update schema, generate schema code. Inside `project_root/db/ent`, run:
+
+```
+go generate
+```
 
 ### Migration
 

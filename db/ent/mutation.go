@@ -878,6 +878,7 @@ type UserMutation struct {
 	age           *int
 	addage        *int
 	name          *string
+	hasEaten      *bool
 	clearedFields map[string]struct{}
 	cars          map[int]struct{}
 	removedcars   map[int]struct{}
@@ -1080,6 +1081,42 @@ func (m *UserMutation) ResetName() {
 	m.name = nil
 }
 
+// SetHasEaten sets the "hasEaten" field.
+func (m *UserMutation) SetHasEaten(b bool) {
+	m.hasEaten = &b
+}
+
+// HasEaten returns the value of the "hasEaten" field in the mutation.
+func (m *UserMutation) HasEaten() (r bool, exists bool) {
+	v := m.hasEaten
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHasEaten returns the old "hasEaten" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldHasEaten(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHasEaten is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHasEaten requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHasEaten: %w", err)
+	}
+	return oldValue.HasEaten, nil
+}
+
+// ResetHasEaten resets all changes to the "hasEaten" field.
+func (m *UserMutation) ResetHasEaten() {
+	m.hasEaten = nil
+}
+
 // AddCarIDs adds the "cars" edge to the Car entity by ids.
 func (m *UserMutation) AddCarIDs(ids ...int) {
 	if m.cars == nil {
@@ -1207,12 +1244,15 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 3)
 	if m.age != nil {
 		fields = append(fields, user.FieldAge)
 	}
 	if m.name != nil {
 		fields = append(fields, user.FieldName)
+	}
+	if m.hasEaten != nil {
+		fields = append(fields, user.FieldHasEaten)
 	}
 	return fields
 }
@@ -1226,6 +1266,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.Age()
 	case user.FieldName:
 		return m.Name()
+	case user.FieldHasEaten:
+		return m.HasEaten()
 	}
 	return nil, false
 }
@@ -1239,6 +1281,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldAge(ctx)
 	case user.FieldName:
 		return m.OldName(ctx)
+	case user.FieldHasEaten:
+		return m.OldHasEaten(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -1261,6 +1305,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
+		return nil
+	case user.FieldHasEaten:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHasEaten(v)
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
@@ -1331,6 +1382,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldName:
 		m.ResetName()
+		return nil
+	case user.FieldHasEaten:
+		m.ResetHasEaten()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
