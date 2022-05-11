@@ -1,6 +1,7 @@
-### Steps
+### Updating Schema
 
-- Update schema, generate schema code. Inside `project_root/db/ent`, run:
+- update schema
+- generate updated code for db operation, in `project_root/db/ent`, run:
 
 ```
 go generate
@@ -14,19 +15,19 @@ go generate
 go run migrate.go [migration name]
 ```
 
-in the db directory
+in the `project_root/db/`
 
-- Apply migration using `golang-migrate`.
+- Apply migration using `golang-migrate`. in `project_root/db/` run:
 
 ```
 migrate -source 'file://migrations' -database 'postgresql://postgres:postgres@127.0.0.1/test_db?sslmode=disable' up
 ```
 
-### More References
+### References
 
-#### Getting started:
+#### Getting started with Ent:
 
-- https://entgo.io/docs/versioned-migrations/#from-graph
+- https://entgo.io/docs/getting-started
 
 #### Migration:
 
