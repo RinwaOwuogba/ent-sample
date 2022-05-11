@@ -1,10 +1,10 @@
 ### Updating Schema
 
 - update schema
-- generate updated code for db operation, in `project_root/db/ent`, run:
+- generate updated code for db operations, run:
 
 ```
-go generate
+go generate ./db/ent
 ```
 
 ### Migration
@@ -29,5 +29,5 @@ migrate -source 'file://db/migrations' -database 'postgresql://postgres:postgres
 
 #### Migration:
 
-- https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md
 - https://entgo.io/blog/2022/03/14/announcing-versioned-migrations/
+- https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md
