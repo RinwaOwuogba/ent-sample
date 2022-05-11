@@ -12,7 +12,7 @@ go generate ./db/ent
 - Create migration files by running:
 
 ```
-go run db/migrate.go [migration name]
+go run db/make-migrations.go [migration name]
 ```
 
 - Apply migration using `golang-migrate`. in project_root run:
