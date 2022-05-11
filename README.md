@@ -9,18 +9,16 @@ go generate
 
 ### Migration
 
-- Run
+- Create migration files by running:
 
 ```
-go run migrate.go [migration name]
+go run db/migrate.go [migration name]
 ```
 
-in the `project_root/db/`
-
-- Apply migration using `golang-migrate`. in `project_root/db/` run:
+- Apply migration using `golang-migrate`. in project_root run:
 
 ```
-migrate -source 'file://migrations' -database 'postgresql://postgres:postgres@127.0.0.1/test_db?sslmode=disable' up
+migrate -source 'file://db/migrations' -database 'postgresql://postgres:postgres@127.0.0.1/test_db?sslmode=disable' up
 ```
 
 ### References

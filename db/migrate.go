@@ -21,7 +21,7 @@ func main() {
 	migrationName := os.Args[1]
 
 	// Load the graph.
-	graph, err := entc.LoadGraph("./ent/schema", &gen.Config{})
+	graph, err := entc.LoadGraph("./db/ent/schema", &gen.Config{})
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -33,7 +33,7 @@ func main() {
 	}
 
 	// Create a local migration directory.
-	d, err := migrate.NewLocalDir("migrations")
+	d, err := migrate.NewLocalDir("./db/migrations")
 	if err != nil {
 		log.Fatalln(err)
 	}
